@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.medical.equipment.mapper.EarTemperatureSensorEquipmentMapper">
+
+
+    <select id="findLineChart" resultType="java.util.Map">
+        SELECT date_format(create_time - create_time % 100, '%H:%i') AS time,
+        temperature  AS countT
+        FROM
+            ear_temperature_sensor_equipment
+        where
+            DATE_FORMAT( create_time
+            , #{dataFormat} ) BETWEEN #{startTime}
+          AND #{endTime}
+          AND enabled = 1
+          and user_id=#{userId}
+        GROUP BY
+            time
+        ORDER BY create_time
+    </select>
+    <select id="findDataScreenInfo" resultType="java.util.Map">
+        SELECT id,
+               temperature
+        FROM ear_temperature_sensor_equipment
+        WHERE enabled = 1
+          and create_time between date_add(now(), interval - 5 minute) and now()
+          AND equipment_id = #{equipmentId}
+        ORDER BY create_time DESC LIMIT 1
+    </select>
+    <select id="findBaseInfo" resultType="com.medical.equipment.entity.EarTemperatureSensorEquipmentEntity">
+        SELECT user_id,
+               temperature
+        FROM ear_temperature_sensor_equipment
+        WHERE enabled = 1
+        <if test="timeEntity!=null">
+            and create_time between date_add(now(), interval - 5 minute) and now()
+        </if>
+        ORDER BY create_time DESC LIMIT 1
+    </select>
+    <select id="findTemperature" resultType="com.medical.equipment.entity.EarTemperatureSensorEquipmentEntity">
+        SELECT temperature
+        FROM ear_temperature_sensor_equipment
+        WHERE enabled = 1
+          AND user_id = #{userId}
+          AND equipment_id = #{equipmentId}
+          and create_time between date_add(now(), interval - 5 minute) and now()
+        ORDER BY create_time DESC LIMIT 1
+
+    </select>
+</mapper>

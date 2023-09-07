@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.medical.equipment.mapper.DetectionArmRingEquipmentMapper">
+
+
+    <select id="findLineChart" resultType="java.util.Map">
+        SELECT
+            date_format( create_time - create_time % 100, '%H:%i' ) AS time ,
+	heart_rate as countHR,
+	temperature as countT
+        FROM
+            detection_arm_ring_equipment
+        WHERE
+            DATE_FORMAT( create_time,  #{dataFormat} ) BETWEEN #{startTime}
+          AND #{endTime}
+          AND enabled = 1
+          AND user_id = #{userId}
+          AND equipment_id = #{equipmentId}
+        GROUP BY
+            time
+        ORDER BY create_time
+
+    </select>
+    <select id="findDataScreenInfo" resultType="java.util.Map">
+        SELECT id,
+               temperature,
+               heart_rate
+        FROM detection_arm_ring_equipment
+        WHERE enabled = 1
+          and create_time between date_add(now(), interval - 5 minute) and now()
+          AND equipment_id = #{equipmentId}
+        ORDER BY create_time DESC LIMIT 1
+    </select>
+    <select id="findBaseInfo" resultType="com.medical.equipment.entity.DetectionArmRingEquipmentEntity">
+        SELECT
+        user_id,
+        step_number,
+        temperature,
+        heart_rate
+        FROM
+        detection_arm_ring_equipment
+        WHERE
+        enabled = 1
+        and equipment_id=#{equipmentId}
+        <if test="timeEntity!=null">
+            and create_time between date_add(now(), interval - 5 minute) and now()
+        </if>
+
+        ORDER BY
+        create_time DESC
+        LIMIT 1
+    </select>
+    <select id="findDetailsInfo" resultType="com.medical.equipment.entity.DetectionArmRingEquipmentEntity">
+        SELECT step_number,
+               temperature,
+               heart_rate
+        FROM detection_arm_ring_equipment
+        WHERE enabled = 1
+          and user_id = #{userId}
+        and equipment_id=#{equipmentId}
+          and create_time between date_add(now(), interval - 5 minute) and now()
+        ORDER BY create_time DESC LIMIT 1
+    </select>
+
+</mapper>

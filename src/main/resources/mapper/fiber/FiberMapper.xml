@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.medical.equipment.mapper.FiberMapper">
+
+
+    <select id="findLineChart" resultType="java.util.Map">
+        SELECT date_format(create_time - create_time % 100, '%H:%i') AS time,
+        first_channel_temperature as countFirstT,
+        second_channel_temperature as countSecondT,
+        third_channel_temperature as countThirdT,
+        fourth_channel_temperature as countFourT
+        FROM
+            fiber_temperature_detection
+        WHERE
+            DATE_FORMAT(
+            create_time
+            , #{dataFormat} ) BETWEEN #{startTime}
+          AND #{endTime}
+          AND enabled = 1
+          AND user_id = #{userId}
+        GROUP BY
+            time
+        ORDER BY create_time
+    </select>
+    <select id="findDataScreenInfo" resultType="java.util.Map">
+        SELECT id,
+               first_channel_temperature,
+               second_channel_temperature,
+               third_channel_temperature,
+               fourth_channel_temperature
+        FROM fiber_temperature_detection
+        WHERE enabled = 1
+          and create_time between date_add(now(), interval - 5 minute) and now()
+          AND equipment_id = #{equipmentId}
+        ORDER BY create_time DESC LIMIT 1
+    </select>
+    <select id="findBaseInfo" resultType="com.medical.equipment.entity.FiberTemperatureDetectionEntity">
+        SELECT
+        user_id,
+        first_channel_temperature,
+        second_channel_temperature,
+        third_channel_temperature,
+        fourth_channel_temperature
+        FROM
+        fiber_temperature_detection
+        WHERE
+        enabled = 1
+        AND equipment_id = #{equipmentId}
+        <if test="timeEntity!=null">
+            and create_time between date_add(now(), interval - 5 minute) and now()
+        </if>
+        ORDER BY
+        create_time DESC
+        LIMIT 1
+    </select>
+    <select id="findChannelInfo" resultType="com.medical.equipment.entity.FiberTemperatureDetectionEntity">
+        SELECT first_channel_temperature,
+               second_channel_temperature,
+               third_channel_temperature,
+               fourth_channel_temperature
+        FROM fiber_temperature_detection
+        WHERE enabled = 1
+          AND user_id = #{userId}
+          and create_time between date_add(now(), interval - 5 minute) and now()
+          AND equipment_id = #{equipmentId}
+        ORDER BY create_time DESC LIMIT 1
+    </select>
+</mapper>

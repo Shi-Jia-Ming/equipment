@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="generate.Equipment warningDao">
+  <resultMap id="BaseResultMap" type="generate.Equipment warning">
+    <id column="equipment_id" jdbcType="INTEGER" property="equipmentId" />
+    <result column="equipment_type" jdbcType="VARCHAR" property="equipmentType" />
+    <result column="equipment_warning_name" jdbcType="VARCHAR" property="equipmentWarningName" />
+    <result column="state" jdbcType="VARCHAR" property="state" />
+    <result column="max" jdbcType="DOUBLE" property="max" />
+    <result column="min" jdbcType="DOUBLE" property="min" />
+    <result column="equipment_warning_id" jdbcType="INTEGER" property="equipmentWarningId" />
+    <result column="equipment_type_id" jdbcType="INTEGER" property="equipmentTypeId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    equipment_id, equipment_type, equipment_warning_name, `state`, `max`, `min`, equipment_warning_id, 
+    equipment_type_id
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from `equipment_warning`
+    where equipment_id = #{equipmentId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from `equipment_warning`
+    where equipment_id = #{equipmentId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyColumn="equipment_id" keyProperty="equipmentId" parameterType="generate.Equipment warning" useGeneratedKeys="true">
+    insert into `equipment_warning` (equipment_type, equipment_warning_name,
+      `state`, `max`, `min`, equipment_warning_id, 
+      equipment_type_id)
+    values (#{equipmentType,jdbcType=VARCHAR}, #{equipmentWarningName,jdbcType=VARCHAR}, 
+      #{state,jdbcType=VARCHAR}, #{max,jdbcType=DOUBLE}, #{min,jdbcType=DOUBLE}, #{equipmentWarningId,jdbcType=INTEGER}, 
+      #{equipmentTypeId,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" keyColumn="equipment_id" keyProperty="equipmentId" parameterType="generate.Equipment warning" useGeneratedKeys="true">
+    insert into `equipment_warning`
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="equipmentType != null">
+        equipment_type,
+      </if>
+      <if test="equipmentWarningName != null">
+        equipment_warning_name,
+      </if>
+      <if test="state != null">
+        `state`,
+      </if>
+      <if test="max != null">
+        `max`,
+      </if>
+      <if test="min != null">
+        `min`,
+      </if>
+      <if test="equipmentWarningId != null">
+        equipment_warning_id,
+      </if>
+      <if test="equipmentTypeId != null">
+        equipment_type_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="equipmentType != null">
+        #{equipmentType,jdbcType=VARCHAR},
+      </if>
+      <if test="equipmentWarningName != null">
+        #{equipmentWarningName,jdbcType=VARCHAR},
+      </if>
+      <if test="state != null">
+        #{state,jdbcType=VARCHAR},
+      </if>
+      <if test="max != null">
+        #{max,jdbcType=DOUBLE},
+      </if>
+      <if test="min != null">
+        #{min,jdbcType=DOUBLE},
+      </if>
+      <if test="equipmentWarningId != null">
+        #{equipmentWarningId,jdbcType=INTEGER},
+      </if>
+      <if test="equipmentTypeId != null">
+        #{equipmentTypeId,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="generate.Equipment warning">
+    update `equipment_warning`
+    <set>
+      <if test="equipmentType != null">
+        equipment_type = #{equipmentType,jdbcType=VARCHAR},
+      </if>
+      <if test="equipmentWarningName != null">
+        equipment_warning_name = #{equipmentWarningName,jdbcType=VARCHAR},
+      </if>
+      <if test="state != null">
+        `state` = #{state,jdbcType=VARCHAR},
+      </if>
+      <if test="max != null">
+        `max` = #{max,jdbcType=DOUBLE},
+      </if>
+      <if test="min != null">
+        `min` = #{min,jdbcType=DOUBLE},
+      </if>
+      <if test="equipmentWarningId != null">
+        equipment_warning_id = #{equipmentWarningId,jdbcType=INTEGER},
+      </if>
+      <if test="equipmentTypeId != null">
+        equipment_type_id = #{equipmentTypeId,jdbcType=INTEGER},
+      </if>
+    </set>
+    where equipment_id = #{equipmentId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="generate.Equipment warning">
+    update `equipment_warning`
+    set equipment_type = #{equipmentType,jdbcType=VARCHAR},
+      equipment_warning_name = #{equipmentWarningName,jdbcType=VARCHAR},
+      `state` = #{state,jdbcType=VARCHAR},
+      `max` = #{max,jdbcType=DOUBLE},
+      `min` = #{min,jdbcType=DOUBLE},
+      equipment_warning_id = #{equipmentWarningId,jdbcType=INTEGER},
+      equipment_type_id = #{equipmentTypeId,jdbcType=INTEGER}
+    where equipment_id = #{equipmentId,jdbcType=INTEGER}
+  </update>
+</mapper>
