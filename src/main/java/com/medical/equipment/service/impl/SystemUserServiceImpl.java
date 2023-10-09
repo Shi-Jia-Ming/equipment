@@ -55,9 +55,9 @@ public class SystemUserServiceImpl implements SystemUserService {
         SystemUserEntity systemUser = systemUsers.get(0);
         //判断用户名密码是否正确（密码需加密保存）
         // 将传入的密码进行md5加密
-        String md5Pwd = PasswordUtil.md5(password + password);
+        // String md5Pwd = PasswordUtil.md5(password + password);
         // 登录信息错误
-        if (!md5Pwd.equals(systemUser.getPassword())) {
+        if (!password.equals(systemUser.getPassword())) {
             throw new ErrorException("用户信息错误！");
         }
         //判断用户是否已登录（同一个账户不能在同一时刻登录多个）
