@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 
 @Service
@@ -39,6 +40,18 @@ public class SystemUserServiceImpl implements SystemUserService {
         return systemUserMapper.insert(systemUserEntity);
     }
 
+    @Override
+    public String getCode() {
+        String chars = "1234567890abcdefghijklmnopqrstuvwxyz";
+        int length = chars.length();
+
+        StringBuilder identifyCode = new StringBuilder();
+
+        for (int i = 0; i < 4; ++i) {
+            identifyCode.append(chars.charAt(this.randInt(length)));
+        }
+        return new String(identifyCode);
+    }
 
     @Override
     public void login(HttpServletRequest request, HttpServletResponse response, String userAccount, String password) {
@@ -55,9 +68,9 @@ public class SystemUserServiceImpl implements SystemUserService {
         SystemUserEntity systemUser = systemUsers.get(0);
         //判断用户名密码是否正确（密码需加密保存）
         // 将传入的密码进行md5加密
-        // String md5Pwd = PasswordUtil.md5(password + password);
+         String md5Pwd = PasswordUtil.md5(password + password);
         // 登录信息错误
-        if (!password.equals(systemUser.getPassword())) {
+        if (!md5Pwd.equals(systemUser.getPassword())) {
             throw new ErrorException("用户信息错误！");
         }
         //判断用户是否已登录（同一个账户不能在同一时刻登录多个）
@@ -187,5 +200,19 @@ public class SystemUserServiceImpl implements SystemUserService {
             }
         }
 
+    }
+
+    /**
+     * 生成0~length之间的随机整数
+     * @return 随机整数
+     */
+    private int randInt(int length) {
+        // 创建 Random 对象
+        Random random = new Random();
+
+        // 生成在 [min, max] 范围内的随机整数
+        int min = 0;
+        int max = length - 1;
+        return random.nextInt(max - min + 1) + min;
     }
 }

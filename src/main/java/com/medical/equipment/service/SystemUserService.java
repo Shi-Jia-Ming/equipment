@@ -27,6 +27,12 @@ public interface SystemUserService {
     int insert(SystemUserEntity systemUserEntity);
 
     /**
+     * 生成随机的四个字符的字符串
+     * @return 随机字符串
+     */
+    String getCode();
+
+    /**
      * 登录成功后将用户id存入session
      *
      * @param userAccount 用户账号

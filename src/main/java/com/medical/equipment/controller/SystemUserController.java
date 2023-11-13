@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Objects;
 
 /**
  * @title:  SystemUserController
@@ -28,6 +29,8 @@ public class SystemUserController {
 
     @Autowired
     private SystemUserService systemUserService;
+
+    private String identifyCode;
 
 
     @PostMapping("/insert")
@@ -61,13 +64,25 @@ public class SystemUserController {
         return delete > 0 ? R.ok() : R.error("删除失败");
     }
 
+    @GetMapping("/getCode")
+    @ApiOperation(value = "获取验证码")
+    public R getCode() {
+        this.identifyCode = systemUserService.getCode();
+        return R.ok().put(RConstant.data, this.identifyCode);
+    }
+
 
     @PostMapping("/login")
     @ApiOperation(value = "系统用户登录接口")
     public R login(HttpServletRequest request, HttpServletResponse response, @RequestParam String userAccount,
-                   @RequestParam String password) {
+                   @RequestParam String password, @RequestParam String identifyCode) {
         systemUserService.login(request, response, userAccount, password);
-        return R.ok();
+
+        if (Objects.equals(identifyCode, this.identifyCode)) {
+            return R.ok();
+        } else {
+            return R.error("验证码错误");
+        }
     }
 
 
